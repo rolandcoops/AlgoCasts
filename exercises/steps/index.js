@@ -35,6 +35,12 @@
 // }
 
 // function steps(n) {
+//   for (let i = 1; i <= n; i++) {
+//     console.log('#'.repeat(i) + ' '.repeat(n - i))
+//   }
+// }
+
+// function steps(n) {
 //   let i = 0
 //   while (++i <= n) console.log('#'.repeat(i).padEnd(n, ' '))
 // }
