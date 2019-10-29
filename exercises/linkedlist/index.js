@@ -104,6 +104,22 @@ class LinkedList {
   /**
    * Other
    */
+
+  forEach (fn) {
+    let cur = this.head
+    while (cur) {
+      fn(cur)
+      cur = cur.next
+    }
+  }
+
+  *[Symbol.iterator]() {
+    let cur = this.head;
+    while (cur) {
+      yield cur;
+      cur = cur.next;
+    }
+  }
 }
 
 module.exports = { Node, LinkedList }
