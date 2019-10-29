@@ -29,19 +29,15 @@ class LinkedList {
    */
 
   getFirst() {
-    return this.head
+    return this.getAt(0)
   }
 
   insertFirst(data) {
-    this.head = new Node(data, this.head)
-    this._size++
+    this.insertAt(data, 0)
   }
 
   removeFirst() {
-    if (this.head) {
-      this.head = this.head.next
-      this._size--
-    }
+    this.removeAt(0)
   }
 
   /**
@@ -49,42 +45,15 @@ class LinkedList {
    */
 
   getLast() {
-    let cur = this.head
-
-    if (!cur) return null
-
-    while (cur.next) cur = cur.next
-
-    return cur
+    return this.getAt(this.size() - 1)
   }
 
   insertLast(data) {
-    const newNode = new Node(data)
-    const last = this.getLast()
-
-    if (last) last.next = newNode
-    else this.head = newNode
-
-    this._size++
+    this.insertAt(data, this.size())
   }
 
   removeLast() {
-    let prev = null
-    let cur = this.head
-
-    // if no head, exit early
-    if (!cur) return
-
-    // while there is a next node
-    while (cur.next) {
-      prev = cur
-      cur = cur.next
-    }
-
-    if (prev) prev.next = null
-    else this.head = null
-
-    this._size--
+    this.removeAt(this.size() - 1)
   }
 
   /**
@@ -103,27 +72,33 @@ class LinkedList {
   }
 
   insertAt (data, index) {
-    // these rules (< 0 and > size cases) are weird but included in tests…
-    if (index <= 0) return this.insertFirst(data) // add head
-    if (index >= this.size()) return this.insertLast(data) // add tail
+    if (!this.head) {
+      this.head = new Node(data);
+    } else if (index <= 0) {
+      this.head = new Node(data, this.head);
+    } else {
+      // allows inserting at last index for out of bounds cases
+      let prevIndex = Math.min(index, this.size()) - 1
+      let prev = this.getAt(prevIndex) || this.getLast()
+      prev.next = new Node(data, prev.next)
+    }
 
-    let prev = this.getAt(index - 1)
-
-    prev.next = new Node(data, prev.next)
     this._size++
   }
 
   removeAt(index) {
-    if (index === 0) return this.removeFirst() // remove head
-
-    let prev = this.getAt(index - 1)
-
-    // if prev === null then list is empty
-    // if prev.next === null then index is out of bounds
-    if (prev && prev.next) {
+    if (!this.head) {
+      return
+    } else if (index === 0) {
+      this.head = this.head.next
+    } else {  
+      let prev = this.getAt(index - 1)
+      // if prev === null then list is empty
+      // if prev.next === null then index is out of bounds
+      if (!prev || !prev.next) return
       prev.next = prev.next.next
-      this._size--
     }
+    this._size--
   }
 
   /**
