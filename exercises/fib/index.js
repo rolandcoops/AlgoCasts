@@ -73,29 +73,65 @@
 //   // }
 // }
 
-// stringify non-primitive types to avoid key collision, i.e. `[object Object]`
-// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/typeof
-const primitiveTypes = ['number', 'string', 'boolean']
+// // stringify non-primitive types to avoid key collision, i.e. `[object Object]`
+// // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/typeof
+// const primitiveTypes = ['number', 'string', 'boolean']
 
-const computeKey = (args = []) => {
-  let hash = ''
-  for (let i = 0; i < args.length; i++) {
-    const arg = args[i], type = typeof arg
-    hash += (!arg || primitiveTypes.includes(type)) ? arg : JSON.stringify(arg)
+// const computeKey = (args = []) => {
+//   let hash = ''
+//   for (let i = 0; i < args.length; i++) {
+//     const arg = args[i], type = typeof arg
+//     hash += (!arg || primitiveTypes.includes(type)) ? arg : JSON.stringify(arg)
+//   }
+//   return hash
+// }
+
+// const memoize = (fn) => {
+//   const cache = {}
+
+//   return (...args) => {
+//     const key = computeKey(args)
+//     // if key is in cache, return cached previous result
+//     if (cache.hasOwnProperty(key)) return cache[key]
+//     // otherwise perform expensive function, cache result and return
+//     return cache[key] = fn(...args)
+//   }
+// }
+
+const value = Symbol('value')
+
+const retrieve = (node, path) => {
+  for (let i = 0; i < path.length; i++) {
+    const key = path[i]
+    if (node.has(key)) {
+      node = node.get(key)
+    } else {
+      const child = new Map()
+      node.set(key, child)
+      node = child
+    }
   }
-  return hash
+  return node
 }
 
 const memoize = (fn) => {
-  const cache = {}
+  let cache = new Map()
+  let size = 0
 
-  return (...args) => {
-    const key = computeKey(args)
+  function memoized (...args) {
+    const node = retrieve(cache, args)
     // if key is in cache, return cached previous result
-    if (cache.hasOwnProperty(key)) return cache[key]
+    if (node.has(value)) return node.get(value)
     // otherwise perform expensive function, cache result and return
-    return cache[key] = fn(...args)
+    const result = fn.apply(this, args)
+    node.set(value, result)
+    return result
   }
+  // expose cache (e.g. to allow manual clearing)
+  Object.defineProperty(memoized, "cache", {
+    get: () => cache,
+  })
+  return memoized
 }
 
 const fib = memoize((n) => {
