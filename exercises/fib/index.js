@@ -12,27 +12,35 @@
 //   let prev = 0
 //   let cur = 1
 //   let entry
-  
 //   while (--n > 0) {
 //     entry = prev + cur
 //     prev = cur
 //     cur = entry
 //   }
-  
 //   return cur
 // }
 
 // function fib(n) {
 //   let result = [0, 1]
-
 //   // if n === 1, for loop never executes
 //   for (let i = 2; i <= n; i++) {
 //     const a = result[i - 1]
 //     const b = result[i - 2]
 //     result.push(a + b)
 //   }
-
 //   return result.pop()
+// }
+
+// const fib = (n) => {
+//   if (n <= 1) return n
+//   let fA = 0
+//   let fB = 1
+//   for (let i = 2; i <= n; i++) {
+//     const fC = fA + fB
+//     fA = fB
+//     fB = fC
+//   } 
+//   return fB
 // }
 
 // fib(0)

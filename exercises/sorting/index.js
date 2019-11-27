@@ -100,4 +100,34 @@ function merge(left, right) {
   return res
 }
 
+// not in-place, so pretty crappy as far as optimization goes
+const quickSort = (arr) =>
+  _quickSort([...arr])
+const _quickSort = (arr) => {
+  if (arr.length <= 1) return arr
+  const pivot = arr.pop() // convention to take last element as pivot
+  const left = []
+  const right = []
+  for (let item of arr) {
+    if (item < pivot) left.push(item)
+    else              right.push(item)
+  }
+  return [..._quickSort(left), pivot, ..._quickSort(right)]
+}
+
+// const quickSortAlt = (arr) =>
+//   _quickSortAlt([...arr])
+// const _quickSortAlt = (arr) => {
+//   if (arr.length <= 1) return arr
+//   const pivot = arr[arr.length - 1] // convention to take last element as pivot
+//   const left = []
+//   const right = []
+//   for (let i = 0; i < arr.length - 1; i++) {
+//     const item = arr[i]
+//     if (item < pivot) left.push(item)
+//     else              right.push(item)
+//   }
+//   return [..._quickSortAlt(left), pivot, ..._quickSortAlt(right)]
+// }
+
 module.exports = { bubbleSort, selectionSort, mergeSort, merge };
